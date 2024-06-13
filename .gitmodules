@@ -1,0 +1,3 @@
+[submodule "external/libsnap7"]
+	path = external/libsnap7
+	url = git@github.com:max-dark/libsnap7.git

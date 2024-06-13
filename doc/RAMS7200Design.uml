@@ -1,0 +1,106 @@
+@startuml
+start
+
+:Read <b>config.RAMS7200</b> file;
+note right
+    Reads the configuration entries,remote and local TSAP port,
+    pollingInterval, smoothing, cycle interval and max number
+    of IO failures for reconnection via
+    <b>RAMS7200Resources::readSection()</b>
+end note   
+:RAMS7200HWService::start() ;
+
+:Launch a thread for each IP Address associated with the driver
+;
+note left
+    <b> RAMS7200HWService::handleNewMS() </b>
+    (also callback for new MS addressed in the driver
+    via <b>setNewMSCallback()</b>)
+end note
+fork
+    :ThreadPerIP for IP Address 1;
+    (F)
+    detach
+fork again
+    :ThreadPerIP for IP Address ...;
+    (F)
+    detach
+fork again 
+    -[#black,dotted]->
+    :ThreadPerIP for IP Address N;
+    -[#black,dotted]->
+    (F)
+    note right
+        <b>RAMS7200LibFacade</b>
+    end note    
+    detach
+end fork
+
+
+fork
+    partition RAMS7200HWService::writeData() {
+        start
+        :Decode HWObject from WinCC;
+        if(object is an MS item) then
+            :<b>RAMS7200MS::queuePLCItem()</b>;
+        else if(object is Config item) then
+            :Apply config;
+        endif
+        stop
+    }
+    partition RAMS7200HWService::workProc() {
+        start
+        while (<b>_toDPqueue</b> items to process?) is (yes)
+            if (item addressed in the driver?) then (yes)
+                :push DPE entry to WinCC;
+                note right
+                    <b>DrvManager::getSelfPtr()->toDp</b>
+                end note
+            endif
+        endwhile (no)  
+        stop
+    }
+
+fork again 
+    partition ThreadPerIP {
+        start
+        while(<b>_driverRun & ms._run</b>?) is (yes)
+            (F)
+            note right
+                <b>RAMS7200LibFacade.WriteToPLC()</b>
+                (sends the queued items to the PLC)
+            end note
+            (F)
+            note right 
+                <b>RAMS7200LibFacade.Poll()</b>
+            end note
+            while (polled values to process?) is (yes)
+                if (smoothing enabled?) then (yes)
+                    :compare last values and send only if different;
+                else(no)
+                    :send all polled values;
+                endif
+
+                :<b>RAMS7200HWService::queueToDP()</b>  callback;
+            endwhile (no)   
+        endwhile (no)
+        stop
+    }
+partition RAMS7200LibFacade.poll() {
+    start
+    partition Loop Over all Addresses of the MS {
+        if(Current Time - Last Write time of Address >= Polling Time) then (Yes)
+           :Add to poll list;
+        endif
+    }
+    if(Poll List is not empty) then (Yes)
+        :<b>read from PLC via snap7</b>;
+    endif
+    stop
+}   
+
+end fork
+
+
+end
+@enduml

@@ -1,0 +1,6 @@
+*.o
+*.gcno
+*.gcda
+**/*.log
+.vscode
+build
