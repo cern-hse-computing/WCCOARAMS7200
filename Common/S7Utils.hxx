@@ -195,6 +195,7 @@ namespace Common{
                         ss << "--> " << opStr << " : unknown WordLen";
                         break;
                 }
+                ss << " : Allocated memory size : " << DataSizeByte(item->WordLen)*item->Amount << "B";
                 
                 return ss.str();
             }
@@ -207,13 +208,10 @@ namespace Common{
                 item.Start    = item.WordLen == S7WLBit ? (AddressGetStart(Address)*8)+AddressGetBit(Address) : AddressGetStart(Address);
                 item.Amount   = AddressGetAmount(Address);
                 item.Result   = -1;
+                item.pdata    = nullptr;
                 if(allocateMemory) 
                 {
                     TS7AllocateDataItemForAddress(item);
-                }
-                else
-                {
-                    item.pdata    = nullptr;
                 }
                 return item;
             }
@@ -232,7 +230,7 @@ namespace Common{
             }
 
             static void TS7AllocateDataItemForAddress(TS7DataItem& item){
-                if(item.pdata){
+                if(item.pdata != nullptr){
                     delete[] static_cast<char*>(item.pdata);
                 }
                 item.pdata    =  new char[DataSizeByte(item.WordLen )*item.Amount];

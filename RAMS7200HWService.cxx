@@ -40,6 +40,7 @@ static std::atomic<bool> _driverRun{true};
 RAMS7200HWService::RAMS7200HWService()
 {
   signal(SIGSEGV, handleSegfault);
+  signal(SIGABRT, handleSegfault);
 }
 
 PVSSboolean RAMS7200HWService::initialize(int argc, char *argv[])
@@ -240,7 +241,7 @@ PVSSboolean RAMS7200HWService::writeData(HWObject *objPtr)
       float inFloat = Common::Utils::CopyNSwapBytes<float>(correctval);
       Common::Logger::globalInfo(Common::Logger::L2, "Received request to write float, Correct val is:  ", std::to_string(inFloat).c_str());
     } else {
-      Common::Logger::globalInfo(Common::Logger::L2, "Received request to write non integer/float: ", reinterpret_cast<const char*>(correctval), reinterpret_cast<const char*>(correctval) + length);
+      Common::Logger::globalInfo(Common::Logger::L2, "Received request to write non integer/float");
     }
 
     msIt->second.queuePLCItem(addressOptions[ADDRESS_OPTIONS_VAR], correctval);
@@ -270,3 +271,4 @@ void handleSegfault(int signal_code){
     // restore and trigger default handle (to get the core dump)
     signal(signal_code, SIG_DFL);
 }
+

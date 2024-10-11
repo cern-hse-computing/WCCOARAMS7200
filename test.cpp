@@ -184,7 +184,7 @@ void PerformTests()
         "VW1984", //VW1984=13220
         "VB2978.20", //VB2978.20='29 1-035',
         "VW2000",
-        "VW2002"
+        "VW2002",
         "VB1604", //VB1604=8
         "V1604.2", //V1604.2=0
         "V1604.3", //V1604.3=1
@@ -305,6 +305,9 @@ void PerformTests()
                 break;
             default:
                 break;
+        }
+        if(item.pdata != nullptr){
+            delete[] item.pdata;
         }
     }
 }
