@@ -37,12 +37,7 @@ namespace Common {
  */
 class Logger{
 public:
-    Logger() : creationTime(0), logNum(0), devNum(0), prefix(""){
-	};
-
-    Logger(int devNum):creationTime(0), logNum(0), devNum(devNum){
-		updatePrefix();
-	};
+    Logger(){};
 
     ~Logger();
 
@@ -52,11 +47,6 @@ public:
 	 */
 	static void setLogLvl(int16_t lvl);
 
-	/*!
-	 * Setting number of device to which logger is binded
-	 * \param device number
-	 */
-	void setDevNum(int num);
 
 	static void globalInfo(int lvl, const char *note1 = NULL, const char* note2 = NULL, const char* note3 = NULL);
 
@@ -72,26 +62,8 @@ public:
 
     static const int getLogLevel();
 private:
-
-	std::fstream& getStream();
-
-	void closeStream();
-
-	void updatePrefix();
-
     static int16_t loggingLevel;
-
-	std::fstream f;
-	long creationTime;
-	int logNum;
-
-	int devNum;
-
-	std::string prefix;
-
-	static const char * timestrformat;
-
-    mutex localVariableDataAccess;
+	static const char*  timestrformat;
 };
 
 
@@ -102,16 +74,6 @@ inline void Logger::setLogLvl(int16_t lvl){
 
 inline const int Logger::getLogLevel(){
     return loggingLevel;
-}
-
-inline void Logger::setDevNum(int num){
-    lock_guard<mutex> raiiLock(localVariableDataAccess);
-	devNum = num;
-	updatePrefix();
-}
-
-inline void Logger::updatePrefix(){
-	prefix = devNum? (char *)("[MS " + CharString(devNum)  + "] "): "";
 }
 
 }//namespace

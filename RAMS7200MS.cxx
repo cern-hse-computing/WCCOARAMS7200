@@ -49,13 +49,12 @@ void RAMS7200MS::removeVar(std::string varName)
 
 void RAMS7200MS::queuePLCItem(const std::string& varName, void* item)
 {
-    try
-    {
-        std::lock_guard lock{_rwmutex};
-        vars.at(varName)._toPlc.pdata = item;
-    }
-    catch(const std::out_of_range& e)
-    {
-        Common::Logger::globalWarning(__PRETTY_FUNCTION__, "Undefined address", e.what());
-    }
+  std::lock_guard lock{_rwmutex};
+
+  if (vars.count(varName) == 0) {
+    Common::Logger::globalWarning(__PRETTY_FUNCTION__, "Undefined variable:", varName.c_str());
+    return;
+  }
+
+  vars.at(varName)._toPlc.pdata = item;
 }

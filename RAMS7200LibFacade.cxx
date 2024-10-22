@@ -35,9 +35,10 @@ RAMS7200LibFacade::RAMS7200LibFacade(RAMS7200MS& ms, queueToDPCallback cb)
 void RAMS7200LibFacade::EnsureConnection(bool reduSwitch) {
 
     if(reduSwitch) {
+        Common::Logger::globalInfo(Common::Logger::L1,__PRETTY_FUNCTION__, "Setting connection status on Redu Switch for PLC IP:" + CharString(ms._ip.c_str()));
         RAMS7200MarkDeviceConnectionError(!_client->Connected());
     }
-    if(_client->Connected() && ioFailures < Common::Constants::getMaxIoFailures()){
+    if(_client->Connected() && _wasConnected && ioFailures < Common::Constants::getMaxIoFailures()){
         return;
     } else {
         if (_wasConnected) {
@@ -54,7 +55,7 @@ void RAMS7200LibFacade::EnsureConnection(bool reduSwitch) {
                 sleep_for(std::chrono::seconds(5));
             }
         } while(ms._run && !_wasConnected);
-        RAMS7200MarkDeviceConnectionError(false);
+        RAMS7200MarkDeviceConnectionError(!_wasConnected);
     }
 }
 
@@ -65,10 +66,11 @@ void RAMS7200LibFacade::Connect()
     _client.reset(new TS7Client());
 
     _client->SetConnectionParams(ms._ip.c_str(), Common::Constants::getLocalTsapPort(), Common::Constants::getRemoteTsapPort());
-    if(_client->Connect() == 0) {
+    if(_client->Connect() == 0 && _client->Connected()) {
+        Common::Logger::globalInfo(Common::Logger::L1,__PRETTY_FUNCTION__, "Snap7: Connected to '", ms._ip.c_str());
         _wasConnected = true;
+        ioFailures = 0;
     }
-    RAMS7200MarkDeviceConnectionError(!_client->Connected());
 }
 
 
@@ -83,6 +85,10 @@ void RAMS7200LibFacade::Disconnect()
 
 void RAMS7200LibFacade::Poll()
 {
+    if(!_wasConnected){
+        Common::Logger::globalWarning(__PRETTY_FUNCTION__, "Not connected to PLC IP:", ms._ip.c_str());
+        return;
+    }
     if(ms.vars.empty()){
         Common::Logger::globalWarning(__PRETTY_FUNCTION__, "No addresses for PLC IP:", ms._ip.c_str());
         return;
@@ -119,6 +125,10 @@ void RAMS7200LibFacade::Poll()
 }
 
 void RAMS7200LibFacade::WriteToPLC() {
+    if(!_wasConnected){
+        Common::Logger::globalWarning(__PRETTY_FUNCTION__, "Not connected to PLC IP:", ms._ip.c_str());
+        return;
+    }
     std::vector<DPInfo> addresses;
     std::vector<TS7DataItem> items;
     {
@@ -242,6 +252,7 @@ void RAMS7200LibFacade::queueAll(std::vector<DPInfo>&& dpItems, std::vector<TS7D
         } else {
             failed <<  dpItems[i].dpAddress.c_str() << " ";
             delete[] static_cast<char*>(s7items[i].pdata);
+            s7items[i].pdata = nullptr;
         }
     }
 
@@ -263,24 +274,30 @@ void RAMS7200LibFacade::doSmoothing(std::vector<DPInfo>&& dpItems, std::vector<T
         std::lock_guard lock(ms._rwmutex);
 
         for(uint i = 0; i < s7items.size(); i++) {
-            if(auto item = s7items[i]; item.Result == 0) {
+            auto& item = s7items[i];
+            if(item.Result == 0 && item.pdata != nullptr) {
                 const auto& DPInfo = dpItems[i];
                 Common::Logger::globalInfo(Common::Logger::L4, DPInfo.dpAddress.c_str(), Common::S7Utils::DisplayTS7DataItem(&item, Common::S7Utils::Operation::READ).c_str());
                 auto it = ms.vars.find(DPInfo.plcAddress);
                 if(it != ms.vars.end()) {
                     auto& var = it->second;
                     const auto dataSize = var._toDP.Amount * Common::S7Utils::DataSizeByte(var._toDP.WordLen);
+                    if(var._toDP.pdata == nullptr) {
+                        var._toDP.pdata = new char[dataSize];
+                    }
                     if (std::memcmp(var._toDP.pdata, item.pdata, dataSize) != 0) {
                         std::memcpy(var._toDP.pdata, item.pdata, dataSize);
                         toDPItems.emplace_back(DPInfo.dpAddress.c_str(), dataSize, static_cast<char*>(item.pdata));
                         Common::Logger::globalInfo(Common::Logger::L4, DPInfo.dpAddress.c_str(), "--> Smoothing updated");
-                        continue;
+                    } else {
+                        delete[] static_cast<char*>(item.pdata);
                     }
-                } 
+                }
             } else {
                 failed << dpItems[i].dpAddress.c_str() << " ";
+                delete[] static_cast<char*>(item.pdata);
             }
-            delete[] static_cast<char*>(s7items[i].pdata);
+            item.pdata = nullptr;
         }
     }
 
