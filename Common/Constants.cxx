@@ -25,7 +25,7 @@ namespace Common {
     uint32_t Constants::TSAP_PORT_LOCAL = 0;                // Read from PVSS on driver startup from config file
     uint32_t Constants::TSAP_PORT_REMOTE = 0;               // Read from PVSS on driver startupconfig file
     uint32_t Constants::POLLING_INTERVAL = 2;               // Read from PVSS on driver startupconfig file, default 2 seconds
-    uint32_t Constants::MAX_IO_FAILURES = 5;                // Read from PVSS on driver startupconfig file, default 2 seconds
+    uint32_t Constants::MAX_IO_FAILURES = 1;                // Read from PVSS on driver startupconfig file, default 1 time
     uint32_t Constants::CYCLE_INTERVAL = 1;                 // Read from PVSS on driver startupconfig file, default 1 second
     bool Constants::SMOOTHING = true;                       // Read from PVSS on driver startupconfig file
     std::string Constants::drv_version = PROJECT_VER;

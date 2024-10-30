@@ -165,7 +165,7 @@ smoothing = 1
 cycleInterval = 1
 
 # Set max number of IO failures before disconnecting and connecting again
-maxIoFailures = 5
+maxIoFailures = 1
 ```
 
 <a name="toc5"></a>
