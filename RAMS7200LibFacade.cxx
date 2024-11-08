@@ -283,9 +283,11 @@ void RAMS7200LibFacade::doSmoothing(std::vector<DPInfo>&& dpItems, std::vector<T
                     auto& var = it->second;
                     const auto dataSize = var._toDP.Amount * Common::S7Utils::DataSizeByte(var._toDP.WordLen);
                     if(var._toDP.pdata == nullptr) {
-                        var._toDP.pdata = new char[dataSize];
-                    }
-                    if (std::memcmp(var._toDP.pdata, item.pdata, dataSize) != 0) {
+                        Common::S7Utils::TS7AllocateDataItemForAddress(var._toDP);
+                        std::memcpy(var._toDP.pdata, item.pdata, dataSize);
+                        toDPItems.emplace_back(DPInfo.dpAddress.c_str(), dataSize, static_cast<char*>(item.pdata));
+                        Common::Logger::globalInfo(Common::Logger::L4, DPInfo.dpAddress.c_str(), "--> Smoothing initialized");
+                    } else if (std::memcmp(var._toDP.pdata, item.pdata, dataSize) != 0) {
                         std::memcpy(var._toDP.pdata, item.pdata, dataSize);
                         toDPItems.emplace_back(DPInfo.dpAddress.c_str(), dataSize, static_cast<char*>(item.pdata));
                         Common::Logger::globalInfo(Common::Logger::L4, DPInfo.dpAddress.c_str(), "--> Smoothing updated");

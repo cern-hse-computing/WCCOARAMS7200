@@ -18,12 +18,7 @@
 #include <algorithm>
 
 
-RAMS7200MSVar::RAMS7200MSVar(std::string varName, int pollTime, TS7DataItem type) : varName(varName), pollTime(pollTime), _toPlc(type), _toDP(type)
-{
-    if(Common::Constants::getSmoothing()){
-       Common::S7Utils::TS7AllocateDataItemForAddress(_toDP); 
-    }   
-}
+RAMS7200MSVar::RAMS7200MSVar(std::string varName, int pollTime, TS7DataItem type) : varName(varName), pollTime(pollTime), _toPlc(type), _toDP(type){}
 
 void RAMS7200MS::addVar(std::string varName, int pollTime)
 {
