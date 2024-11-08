@@ -148,7 +148,7 @@ void RAMS7200LibFacade::WriteToPLC() {
         }
     }
     if(!addresses.empty()){
-        RAMS7200ReadWriteMaxN(addresses, items, 10, PDU_SIZE, OVERHEAD_WRITE_VARIABLE, OVERHEAD_WRITE_MESSAGE, Common::S7Utils::Operation::WRITE);
+        RAMS7200ReadWriteMaxN(addresses, items, 19, PDU_SIZE, OVERHEAD_WRITE_VARIABLE, OVERHEAD_WRITE_MESSAGE, Common::S7Utils::Operation::WRITE);
     }
     else
     {
