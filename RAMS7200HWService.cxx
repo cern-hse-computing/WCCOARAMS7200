@@ -156,6 +156,8 @@ void RAMS7200HWService::workProc()
 {
 
   HWObject obj;
+  const TimeVar work_time{};
+
   std::lock_guard lock{_toDPmutex};
 
   while (!_toDPqueue.empty())
@@ -172,7 +174,7 @@ void RAMS7200HWService::workProc()
     if ( addrObj )
     {
         //addrObj->debugPrint();
-        obj.setOrgTime(TimeVar());  // current time
+        obj.setOrgTime(work_time);  // current time
         obj.setDlen(std::get<1>(item)); //length
         obj.setData((PVSSchar*)(std::move(std::get<2>(item)))); //data
         obj.setObjSrcType(srcPolled);
