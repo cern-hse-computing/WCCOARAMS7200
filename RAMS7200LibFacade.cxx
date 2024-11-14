@@ -230,6 +230,10 @@ void RAMS7200LibFacade::RAMS7200ReadWriteMaxN(std::vector<DPInfo> dpItems, std::
             } else {
                 queueAll(std::move(dpItems), std::move(items));
             }
+        } else {
+            std::for_each(items.begin(), items.end(), [](TS7DataItem& item){
+               Common::S7Utils::TS7DeallocateDataItem(item);
+            });
         }
 
     }
@@ -251,8 +255,7 @@ void RAMS7200LibFacade::queueAll(std::vector<DPInfo>&& dpItems, std::vector<TS7D
             toDPItems.emplace_back(dpItems[i].dpAddress.c_str(), dpItems[i].dpSize, static_cast<char*>(s7items[i].pdata));
         } else {
             failed <<  dpItems[i].dpAddress.c_str() << " ";
-            delete[] static_cast<char*>(s7items[i].pdata);
-            s7items[i].pdata = nullptr;
+            Common::S7Utils::TS7DeallocateDataItem(s7items[i]);
         }
     }
 
@@ -292,12 +295,12 @@ void RAMS7200LibFacade::doSmoothing(std::vector<DPInfo>&& dpItems, std::vector<T
                         toDPItems.emplace_back(DPInfo.dpAddress.c_str(), dataSize, static_cast<char*>(item.pdata));
                         Common::Logger::globalInfo(Common::Logger::L4, DPInfo.dpAddress.c_str(), "--> Smoothing updated");
                     } else {
-                        delete[] static_cast<char*>(item.pdata);
+                        Common::S7Utils::TS7DeallocateDataItem(item);
                     }
                 }
             } else {
                 failed << dpItems[i].dpAddress.c_str() << " ";
-                delete[] static_cast<char*>(item.pdata);
+                Common::S7Utils::TS7DeallocateDataItem(item);
             }
             item.pdata = nullptr;
         }

@@ -306,9 +306,7 @@ void PerformTests()
             default:
                 break;
         }
-        if(item.pdata != nullptr){
-            delete[] item.pdata;
-        }
+        Common::S7Utils::TS7DeallocateDataItem(item);
     }
 }
 

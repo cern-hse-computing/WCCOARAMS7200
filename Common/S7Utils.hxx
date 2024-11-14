@@ -230,11 +230,16 @@ namespace Common{
             }
 
             static void TS7AllocateDataItemForAddress(TS7DataItem& item){
-                if(item.pdata != nullptr){
-                    delete[] static_cast<char*>(item.pdata);
-                }
+                Common::S7Utils::TS7DeallocateDataItem(item);
                 item.pdata    =  new char[DataSizeByte(item.WordLen )*item.Amount];
                 std::memset(item.pdata, 0, DataSizeByte(item.WordLen )*item.Amount);
+            }
+
+            static void TS7DeallocateDataItem(TS7DataItem& item){
+                if(item.pdata != nullptr){
+                    delete[] static_cast<char*>(item.pdata);
+                    item.pdata = nullptr;
+                }
             }
 
             static int GetByteSizeFromAddress(const std::string& Address)
