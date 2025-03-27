@@ -50,7 +50,7 @@ VariableType RAMS7200BoolTrans::getVariableType() const {
 }
 
 
-PVSSboolean RAMS7200BoolTrans::toPeriph(PVSSchar *buffer, PVSSuint len,	const Variable &var, const PVSSuint subix) const {
+PVSSboolean RAMS7200BoolTrans::toPeriph(PVSSchar *buffer, PVSSushort len,	const Variable &var, const PVSSushort subix) const {
 
 	if(var.isA() != BIT_VAR){
 		ErrHdl::error(ErrClass::PRIO_SEVERE, // Data will be lost
@@ -67,7 +67,7 @@ PVSSboolean RAMS7200BoolTrans::toPeriph(PVSSchar *buffer, PVSSuint len,	const Va
 	return PVSS_TRUE;
 }
 
-VariablePtr RAMS7200BoolTrans::toVar(const PVSSchar *buffer, const PVSSuint dlen, const PVSSuint subix) const {
+VariablePtr RAMS7200BoolTrans::toVar(const PVSSchar *buffer, const PVSSushort dlen, const PVSSushort subix) const {
 	if(dlen && buffer != NULL)
 		return new BitVar(*reinterpret_cast<const bool*>(buffer));
 

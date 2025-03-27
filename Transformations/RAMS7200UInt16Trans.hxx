@@ -12,14 +12,14 @@
  *
  **/
 
-#ifndef RAMS7200INT32TRANS_HXX_
-#define RAMS7200INT32TRANS_HXX_
+#ifndef RAMS7200INT16TRANS_HXX_
+#define RAMS7200INT16TRANS_HXX_
 
 #include <Transformation.hxx>
 namespace Transformations {
 
 
-class RAMS7200Int32Trans: public Transformation {
+class RAMS7200UInt16Trans: public Transformation {
 	/*!
 	 *  Transformations typ
 	 *  \return transformation type
@@ -58,8 +58,8 @@ class RAMS7200Int32Trans: public Transformation {
 	 * \param subix subindex of value in data point
 	 * \return flag if translation was successful
 	 */
-	PVSSboolean toPeriph(PVSSchar *dataPtr, PVSSuint len, const Variable &var,
-			const PVSSuint subix) const;
+	PVSSboolean toPeriph(PVSSchar *dataPtr, PVSSushort len, const Variable &var,
+			const PVSSushort subix) const;
 
 	/*!
 	 * Conversion from Hardware to PVSS
@@ -68,14 +68,13 @@ class RAMS7200Int32Trans: public Transformation {
 	 * \param subix subindex of value associated with peripheral address
 	 * \return flag if translation was successful
 	 */
-	VariablePtr toVar(const PVSSchar *data, const PVSSuint dlen,
-			const PVSSuint subix) const;
+	VariablePtr toVar(const PVSSchar *data, const PVSSushort dlen,
+			const PVSSushort subix) const;
 
 private:
-	const static uint8_t size = sizeof(int32_t);
+	const static uint8_t size = sizeof(uint16_t);
 };
 
 }
-
-#endif /* RAMS7200INT32TRANS_HXX_ */
+#endif /* RAMS7200INT16TRANS_HXX_ */
 

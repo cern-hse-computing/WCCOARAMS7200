@@ -36,7 +36,7 @@ namespace Common {
         {   "_DEBUGLVL",
             [](const char* data)
             {
-                int16_t retVal = Common::Utils::CopyNSwapBytes<int16_t>(data);
+                uint16_t retVal = Common::Utils::CopyNSwapBytes<uint16_t>(data);
                 Common::Logger::globalInfo(Common::Logger::L1,__PRETTY_FUNCTION__, "setLogLvl :",std::to_string(retVal).c_str());
                 Common::Logger::setLogLvl(retVal);
             }

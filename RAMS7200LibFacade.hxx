@@ -81,7 +81,7 @@ private:
     void Reconnect();
     void Disconnect();
     void RAMS7200MarkDeviceConnectionError(bool);
-    void RAMS7200ReadWriteMaxN(std::vector<DPInfo> dpItems, std::vector<TS7DataItem> items, const uint N, const int PDU_SZ, const int VAR_OH, const int MSG_OH, const Common::S7Utils::Operation rorw);
+    void RAMS7200ReadWriteMaxN(std::vector<DPInfo> dpItems, std::vector<TS7DataItem> items, const uint N, const uint PDU_SZ, const uint VAR_OH, const uint MSG_OH, const Common::S7Utils::Operation rorw);
     void doSmoothing(std::vector<DPInfo>&& dpItems, std::vector<TS7DataItem>&& items);
     void queueAll(std::vector<DPInfo>&& dpItems, std::vector<TS7DataItem>&& items);
 

@@ -23,8 +23,8 @@
 
 #define RAMS7200DrvBoolTransType (TransUserType)
 #define RAMS7200DrvUint8TransType (TransUserType + 1)
-#define RAMS7200DrvInt16TransType (TransUserType + 2)
-#define RAMS7200DrvInt32TransType (TransUserType + 3)
+#define RAMS7200DrvUInt16TransType (TransUserType + 2)
+#define RAMS7200DrvUInt32TransType (TransUserType + 3)
 #define RAMS7200DrvFloatTransType (TransUserType + 4)
 #define RAMS7200DrvStringTransType (TransUserType + 5)
 

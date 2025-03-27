@@ -45,7 +45,7 @@ public:
 	 * Change of global logger info level
 	 * \param new logging level
 	 */
-	static void setLogLvl(int16_t lvl);
+	static void setLogLvl(uint16_t lvl);
 
 
 	static void globalInfo(int lvl, const char *note1 = NULL, const char* note2 = NULL, const char* note3 = NULL);
@@ -62,12 +62,12 @@ public:
 
     static const int getLogLevel();
 private:
-    static int16_t loggingLevel;
+    static uint16_t loggingLevel;
 	static const char*  timestrformat;
 };
 
 
-inline void Logger::setLogLvl(int16_t lvl){
+inline void Logger::setLogLvl(uint16_t lvl){
 	loggingLevel = lvl;
 }
 

@@ -49,7 +49,7 @@ VariableType RAMS7200Uint8Trans::getVariableType() const {
 	return INTEGER_VAR;
 }
 
-PVSSboolean RAMS7200Uint8Trans::toPeriph(PVSSchar *buffer, PVSSuint len,	const Variable &var, const PVSSuint subix) const {
+PVSSboolean RAMS7200Uint8Trans::toPeriph(PVSSchar *buffer, PVSSushort len,	const Variable &var, const PVSSushort subix) const {
 
 	if(var.isA() != INTEGER_VAR){
 		ErrHdl::error(ErrClass::PRIO_SEVERE, // Data will be lost
@@ -67,7 +67,7 @@ PVSSboolean RAMS7200Uint8Trans::toPeriph(PVSSchar *buffer, PVSSuint len,	const V
 	return PVSS_TRUE;
 }
 
-VariablePtr RAMS7200Uint8Trans::toVar(const PVSSchar *buffer, const PVSSuint dlen, const PVSSuint subix) const {
+VariablePtr RAMS7200Uint8Trans::toVar(const PVSSchar *buffer, const PVSSushort dlen, const PVSSushort subix) const {
 
 	if(buffer == NULL || dlen%size > 0 || dlen < size*(subix+1)){
 		ErrHdl::error(ErrClass::PRIO_SEVERE, // Data will be lost
@@ -79,7 +79,7 @@ VariablePtr RAMS7200Uint8Trans::toVar(const PVSSchar *buffer, const PVSSuint dle
 		return NULL;
 	}
 	// this one is a bit special as the number is handled by wincc oa as int32, but we handle it as 8 bit unsigned integer
-	return new IntegerVar((int32_t)*reinterpret_cast<const uint8_t*>(buffer + (subix * size)));
+	return new IntegerVar((uint32_t)*reinterpret_cast<const uint8_t*>(buffer + (subix * size)));
 }
 
 }//namespace

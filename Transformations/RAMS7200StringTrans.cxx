@@ -67,8 +67,8 @@ VariableType RAMS7200StringTrans::getVariableType() const
   return TEXT_VAR;
 }
 
-PVSSboolean RAMS7200StringTrans::toPeriph(PVSSchar *buffer, PVSSuint len,
-                                      const Variable &var, const PVSSuint subix) const
+PVSSboolean RAMS7200StringTrans::toPeriph(PVSSchar *buffer, PVSSushort len,
+                                      const Variable &var, const PVSSushort subix) const
 {
 
   // Be paranoic, check variable type
@@ -102,10 +102,10 @@ PVSSboolean RAMS7200StringTrans::toPeriph(PVSSchar *buffer, PVSSuint len,
   return PVSS_TRUE;
 }
 
-VariablePtr RAMS7200StringTrans::toVar(const PVSSchar *buffer, const PVSSuint dlen,
-                                   const PVSSuint /* subix */) const
+VariablePtr RAMS7200StringTrans::toVar(const PVSSchar *buffer, const PVSSushort dlen,
+                                   const PVSSushort/* subix */) const
 {
-  return new TextVar((const char*)buffer, (PVSSuint)strnlen((const char*)buffer, dlen));
+  return new TextVar((const char*)buffer, (PVSSushort)strnlen((const char*)buffer, dlen));
 }
 
 

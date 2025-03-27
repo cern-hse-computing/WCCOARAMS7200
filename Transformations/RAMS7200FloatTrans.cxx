@@ -16,7 +16,7 @@
 
 #include "RAMS7200FloatTrans.hxx"
 
-#include "Transformations/RAMS7200Int16Trans.hxx"
+#include "Transformations/RAMS7200UInt16Trans.hxx"
 
 #include "RAMS7200HWMapper.hxx"
 
@@ -52,7 +52,7 @@ VariableType RAMS7200FloatTrans::getVariableType() const {
 	return FLOAT_VAR;
 }
 
-PVSSboolean RAMS7200FloatTrans::toPeriph(PVSSchar *buffer, PVSSuint len, const Variable &var, const PVSSuint subix) const {
+PVSSboolean RAMS7200FloatTrans::toPeriph(PVSSchar *buffer, PVSSushort len, const Variable &var, const PVSSushort subix) const {
 
 	if(var.isA() != FLOAT_VAR){
 		ErrHdl::error(ErrClass::PRIO_SEVERE, // Data will be lost
@@ -68,7 +68,7 @@ PVSSboolean RAMS7200FloatTrans::toPeriph(PVSSchar *buffer, PVSSuint len, const V
 	return PVSS_TRUE;
 }
 
-VariablePtr RAMS7200FloatTrans::toVar(const PVSSchar *buffer, const PVSSuint dlen, const PVSSuint subix) const {
+VariablePtr RAMS7200FloatTrans::toVar(const PVSSchar *buffer, const PVSSushort dlen, const PVSSushort subix) const {
 
 	if(buffer == NULL || dlen%size > 0 || dlen < size*(subix+1)){
 		ErrHdl::error(ErrClass::PRIO_SEVERE, // Data will be lost

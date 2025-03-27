@@ -237,7 +237,7 @@ PVSSboolean RAMS7200HWService::writeData(HWObject *objPtr)
     std::memcpy(correctval, objPtr->getDataPtr(), length);
 
     if(length == 2) {
-      int16_t inInt16 = Common::Utils::CopyNSwapBytes<int16_t>(correctval);
+      uint16_t inInt16 = Common::Utils::CopyNSwapBytes<uint16_t>(correctval);
       Common::Logger::globalInfo(Common::Logger::L2, "Received request to write integer, Correct val is: ", std::to_string(inInt16).c_str());
     } else if(length == 4){
       float inFloat = Common::Utils::CopyNSwapBytes<float>(correctval);

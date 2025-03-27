@@ -166,11 +166,11 @@ void RAMS7200LibFacade::RAMS7200MarkDeviceConnectionError(bool error_status){
     }
 }
 
-void RAMS7200LibFacade::RAMS7200ReadWriteMaxN(std::vector<DPInfo> dpItems, std::vector<TS7DataItem> items, const uint N, const int PDU_SZ, const int VAR_OH, const int MSG_OH, const Common::S7Utils::Operation rorw) {
+void RAMS7200LibFacade::RAMS7200ReadWriteMaxN(std::vector<DPInfo> dpItems, std::vector<TS7DataItem> items, const uint N, const uint PDU_SZ, const uint VAR_OH, const uint MSG_OH, const Common::S7Utils::Operation rorw) {
     try{
 
         int retOpt;
-        int curr_sum;
+        auto curr_sum = 0;
         uint last_index = 0;
         uint to_send = 0;
         while(last_index < items.size()) {

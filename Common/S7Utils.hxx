@@ -131,7 +131,7 @@ namespace Common{
                 return 0; //default
             }
 
-            static int DataSizeByte(int WordLength)
+            static size_t DataSizeByte(int WordLength)
             {
                 switch (WordLength){
                     case S7WLBit     : return 1;  // S7 sends 1 byte per bit
@@ -188,7 +188,7 @@ namespace Common{
                     {
                         uint8_t bitVal;
                         std::memcpy(&bitVal, item->pdata  , sizeof(uint8_t));
-                        ss << "--> " << opStr << " value as bit : " << static_cast<int>(bitVal) << "";
+                        ss << "--> " << opStr << " value as bit : " << static_cast<uint8_t>(bitVal) << "";
                         break;
                     }
                     default:
@@ -231,8 +231,12 @@ namespace Common{
 
             static void TS7AllocateDataItemForAddress(TS7DataItem& item){
                 Common::S7Utils::TS7DeallocateDataItem(item);
-                item.pdata    =  new char[DataSizeByte(item.WordLen )*item.Amount];
-                std::memset(item.pdata, 0, DataSizeByte(item.WordLen )*item.Amount);
+                if (item.WordLen < 0 || item.Amount < 0) {
+                    throw std::invalid_argument("Negative WordLen or Amount in TS7AllocateDataItemForAddress");
+                }
+                size_t total_size = DataSizeByte(item.WordLen) * static_cast<size_t>(item.Amount);
+                item.pdata    =  new char[total_size];
+                std::memset(item.pdata, 0, total_size);
             }
 
             static void TS7DeallocateDataItem(TS7DataItem& item){

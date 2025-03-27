@@ -662,13 +662,13 @@
      </prop>
      <prop name="Item">
       <prop name="Text">
-       <prop name="en_US.utf8">Int16</prop>
+       <prop name="en_US.utf8">UInt16</prop>
       </prop>
       <prop name="Select">False</prop>
      </prop>
      <prop name="Item">
       <prop name="Text">
-       <prop name="en_US.utf8">Int32</prop>
+       <prop name="en_US.utf8">UInt32</prop>
       </prop>
       <prop name="Select">False</prop>
      </prop>

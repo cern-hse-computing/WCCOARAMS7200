@@ -14,8 +14,8 @@
 
 #include "RAMS7200HWMapper.hxx"
 #include "Transformations/RAMS7200StringTrans.hxx"
-#include "Transformations/RAMS7200Int16Trans.hxx"
-#include "Transformations/RAMS7200Int32Trans.hxx"
+#include "Transformations/RAMS7200UInt16Trans.hxx"
+#include "Transformations/RAMS7200UInt32Trans.hxx"
 #include "Transformations/RAMS7200FloatTrans.hxx"
 #include "Transformations/RAMS7200BoolTrans.hxx"
 #include "Transformations/RAMS7200Uint8Trans.hxx"
@@ -57,13 +57,13 @@ PVSSboolean RAMS7200HWMapper::addDpPa(DpIdentifier &dpId, PeriphAddr *confPtr)
       Common::Logger::globalInfo(Common::Logger::L3,"Uint8 transformation");
       confPtr->setTransform(new Transformations::RAMS7200Uint8Trans);
       break;
-    case RAMS7200DrvInt32TransType:
-      Common::Logger::globalInfo(Common::Logger::L3,"Int32 transformation");
-      confPtr->setTransform(new Transformations::RAMS7200Int32Trans);
+    case RAMS7200DrvUInt32TransType:
+      Common::Logger::globalInfo(Common::Logger::L3,"UInt32 transformation");
+      confPtr->setTransform(new Transformations::RAMS7200UInt32Trans);
       break;
-    case RAMS7200DrvInt16TransType:
-      Common::Logger::globalInfo(Common::Logger::L3,"Int16 transformation");
-      confPtr->setTransform(new Transformations::RAMS7200Int16Trans);
+    case RAMS7200DrvUInt16TransType:
+      Common::Logger::globalInfo(Common::Logger::L3,"UInt16 transformation");
+      confPtr->setTransform(new Transformations::RAMS7200UInt16Trans);
       break;
     case RAMS7200DrvFloatTransType:
       Common::Logger::globalInfo(Common::Logger::L3,"Float transformation");

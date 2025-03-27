@@ -225,8 +225,8 @@ When the RAMS7200 driver pushes a DPE value to WinCC, a transformation takes pla
 | ------------------| --------------------------------------------------------------------| ----------------------------------------- |
 | bool              | [RAMS7200BoolTrans.cxx](./Transformations/RAMS7200BoolTrans.cxx)    | 1000 (TransUserType def in WinCC OA API)  |
 | uint8             | [RAMS7200Uint8Trans.cxx](./Transformations/RAMS7200Uint8Trans.cxx)  | 1001 (TransUserType + 1)                  |
-| int16             | [RAMS7200Int16Trans.cxx](./Transformations/RAMS7200Int16Trans.cxx)  | 1002 (TransUserType + 2)                  |
-| int32             | [RAMS7200Int32Trans.cxx](./Transformations/RAMS7200Int32Trans.cxx)  | 1003 (TransUserType + 3)                  |
+| uint16             | [RAMS7200UInt16Trans.cxx](./Transformations/RAMS7200UInt16Trans.cxx)  | 1002 (TransUserType + 2)                  |
+| uint32             | [RAMS7200UInt32Trans.cxx](./Transformations/RAMS7200UInt32Trans.cxx)  | 1003 (TransUserType + 3)                  |
 | float             | [RAMS7200FloatTrans.cxx](./Transformations/RAMS7200FloatTrans.cxx)  | 1004 (TransUserType + 4)                  |
 | string            | [RAMS7200StringTrans.cxx](./Transformations/RAMS7200StringTrans.cxx)| 1005 (TransUserType + 5)                  |
 ---------------------------------------------------------------------------------------------------------------------------------------
