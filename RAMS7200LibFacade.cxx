@@ -32,13 +32,9 @@ RAMS7200LibFacade::RAMS7200LibFacade(RAMS7200MS& ms, queueToDPCallback cb)
 }
 
 
-void RAMS7200LibFacade::EnsureConnection(bool reduSwitch) {
-
-    if(reduSwitch) {
-        Common::Logger::globalInfo(Common::Logger::L1,__PRETTY_FUNCTION__, "Setting connection status on Redu Switch for PLC IP:" + CharString(ms._ip.c_str()));
-        RAMS7200MarkDeviceConnectionError(!_client->Connected());
-    }
+void RAMS7200LibFacade::EnsureConnection() {
     if(_client->Connected() && _wasConnected && ioFailures < Common::Constants::getMaxIoFailures()){
+        RAMS7200MarkDeviceConnectionError(false);
         return;
     } else {
         if (_wasConnected) {
@@ -52,6 +48,7 @@ void RAMS7200LibFacade::EnsureConnection(bool reduSwitch) {
 
             if(!_client->Connected()) {
                 Common::Logger::globalInfo(Common::Logger::L1,__PRETTY_FUNCTION__, "Failure in re-connection. Trying again in 5 seconds for PLC IP:" + CharString(ms._ip.c_str()));
+                RAMS7200MarkDeviceConnectionError(true);
                 sleep_for(std::chrono::seconds(5));
             }
         } while(ms._run && !_wasConnected);
@@ -158,12 +155,10 @@ void RAMS7200LibFacade::WriteToPLC() {
 
 
 void RAMS7200LibFacade::RAMS7200MarkDeviceConnectionError(bool error_status){
-    if (!RAMS7200Resources::getDisableCommands()) {
-        Common::Logger::globalInfo(Common::Logger::L1,__PRETTY_FUNCTION__, std::to_string(error_status).c_str(), CharString("PLC IP: ") + CharString(ms._ip.c_str())) ;
-        auto pdata = new char[sizeof(bool)];
-        memcpy(pdata, &error_status , sizeof(bool));
-        this->_queueToDPCB({std::make_tuple(ms._ip + "._system$_Error",sizeof(bool), pdata)});
-    }
+    Common::Logger::globalInfo(Common::Logger::L3,__PRETTY_FUNCTION__, std::to_string(error_status).c_str(), CharString("PLC IP: ") + CharString(ms._ip.c_str())) ;
+    auto pdata = new char[sizeof(bool)];
+    memcpy(pdata, &error_status , sizeof(bool));
+    this->_queueToDPCB({std::make_tuple(ms._ip + "._system$_Error",sizeof(bool), pdata)});
 }
 
 void RAMS7200LibFacade::RAMS7200ReadWriteMaxN(std::vector<DPInfo> dpItems, std::vector<TS7DataItem> items, const uint N, const uint PDU_SZ, const uint VAR_OH, const uint MSG_OH, const Common::S7Utils::Operation rorw) {

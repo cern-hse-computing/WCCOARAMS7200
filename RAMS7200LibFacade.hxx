@@ -64,7 +64,7 @@ public:
 
     void Poll();
     void WriteToPLC();
-    void EnsureConnection(bool reduSwitch);
+    void EnsureConnection();
 
     void Connect();
 

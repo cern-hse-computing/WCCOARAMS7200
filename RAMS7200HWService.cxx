@@ -78,13 +78,11 @@ void RAMS7200HWService::handleNewMS(RAMS7200MS& ms)
     
     RAMS7200LibFacade aFacade(ms, this->_queueToDPCB);
     aFacade.Connect();
-    bool wasActive = !RAMS7200Resources::getDisableCommands();
     const auto cycleInterval = std::chrono::seconds(Common::Constants::getCycleInterval());
     while(_driverRun && ms._run)
     {
-      const bool isNowActive = !RAMS7200Resources::getDisableCommands();
-      aFacade.EnsureConnection(wasActive != isNowActive);
-      if(isNowActive) {
+      aFacade.EnsureConnection();
+      if(!RAMS7200Resources::getDisableCommands()) {
         // The Server is Active (for redundant systems)
         Common::Logger::globalInfo(Common::Logger::L2,__PRETTY_FUNCTION__, "Polling:", ms._ip.c_str());
         const auto start = std::chrono::steady_clock::now();
@@ -101,7 +99,6 @@ void RAMS7200HWService::handleNewMS(RAMS7200MS& ms)
         // The Server is Passive (for redundant systems)
         aFacade.sleep_for( std::chrono::seconds(1));
       }
-      wasActive = isNowActive;
     }
   }));
 
